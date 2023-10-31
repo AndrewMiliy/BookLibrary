@@ -1,60 +1,93 @@
 package models;
 
+import java.util.Date;
+
 public class BookModel {
-    private UserRole userRole;
+    private int ID;
 
-    public UserRole getUserRole() {
-        return userRole;
+    private String Name;
+    private String Author;
+    private Date PublishingDate;
+    private Date PickupDate;
+    private Date DropDate;
+    private String BookText;
+    private String User;
+
+    public BookModel(int ID, String name, String author, Date publishingDate, String bookText) {
+        this.setID(ID);
+        setName(name);
+        setAuthor(author);
+        setPublishingDate(publishingDate);
+        setBookText(bookText);
     }
 
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
+
+    public int getID() {
+        return ID;
     }
 
-    public boolean isAuthorized() {
-        return userRole == UserRole.ListBook || userRole == UserRole.UserRole;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
-    public void performActionBasedOnUserRole() {
-        switch (userRole) {
-            case ListBook:
-                System.out.println("Perform action for ListBook role.");
-                break;
-            case UserRole:
-                System.out.println("Perform action for UserRole role.");
-                break;
-            case ID:
-                System.out.println("Perform action for ID role.");
-                break;
-            case FirstName:
-                System.out.println("Perform action for FirstName role.");
-                break;
-            case LastName:
-                System.out.println("Perform action for LastName role.");
-                break;
-            case Email:
-                System.out.println("Perform action for Email role.");
-                break;
-            case HashPassword:
-                System.out.println("Perform action for HashPassword role.");
-                break;
-            default:
-                System.out.println("Unauthorized role. Cannot perform the action.");
-                break;
-        }
+    public String getName() {
+        return Name;
     }
-    public static void main(String[] args) {
-        BookModel bookModel = new BookModel();
-        bookModel.setUserRole(UserRole.ListBook);
 
-        System.out.println("User's role: " + bookModel.getUserRole());
-
-        if (bookModel.isAuthorized()) {
-            System.out.println("User is authorized to perform this action.");
-        } else {
-            System.out.println("User is not authorized to perform this action.");
-        }
-
-        bookModel.performActionBasedOnUserRole();
+    public void setName(String name) {
+        Name = name;
     }
+
+    public String getAuthor() {
+        return Author;
+    }
+
+    public void setAuthor(String author) {
+        Author = author;
+    }
+
+    public Date getPublishingDate() {
+        return PublishingDate;
+    }
+
+    public void setPublishingDate(Date publishingDate) {
+        PublishingDate = publishingDate;
+    }
+
+    public Date getPickupDate() {
+        return PickupDate;
+    }
+
+    public void setPickupDate(Date pickupDate) {
+        PickupDate = pickupDate;
+    }
+
+    public Date getDropDate() {
+        return DropDate;
+    }
+
+    public void setDropDate(Date dropDate) {
+        DropDate = dropDate;
+    }
+
+    public String getBookText() {
+        return BookText;
+    }
+
+    public void setBookText(String bookText) {
+        BookText = bookText;
+    }
+
+    public String getUser() {
+        return User;
+    }
+
+    public void setUser(String user) {
+        User = user;
+    }
+
+ public boolean isBusy () {
+        return getUser() == null ? false:true;
+ }
+
 }
