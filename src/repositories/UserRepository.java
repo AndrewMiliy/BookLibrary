@@ -10,8 +10,12 @@ public class UserRepository {
 
 
     public void add(UserModel user) {
-        users.add(user);
-
+        if (Validate.validateEmail(user.getEmail())
+                && Validate.isPasswordValid(user.getPassword())
+                && Validate.validateName(user.getFirstName())
+                && Validate.validateName(user.getLastName())) {
+            users.add(user);
+        }
     }
     public void remove(UserModel user) {
         users.remove(users.findIndexOf(x -> x.equals(user)));
@@ -33,4 +37,7 @@ public class UserRepository {
         targetUser.setLastName(targetUser.getLastName().equals(user.getLastName()) ? targetUser.getLastName() : user.getLastName());
         targetUser.setPassword(targetUser.getPassword().equals(user.getPassword()) ? targetUser.getPassword() : user.getPassword());
     }
+
+
+
 }
