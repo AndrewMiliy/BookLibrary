@@ -1,20 +1,22 @@
 package models;
 
+import repositories.IdCounter;
+
 import java.util.Date;
 
 public class BookModel {
-    private int ID;
+    private int id;
 
-    private String Name;
-    private String Author;
-    private Date PublishingDate;
-    private Date PickupDate;
-    private Date DropDate;
-    private String BookText;
-    private String User;
+    private String name;
+    private String author;
+    private Date publishingDate;
+    private Date pickUpDate;
+    private Date dropDate;
+    private String bookText;
+    private UserModel user;
 
-    public BookModel(int ID, String name, String author, Date publishingDate, String bookText) {
-        this.setID(ID);
+    public BookModel(String name, String author, Date publishingDate, String bookText) {
+        this.id = IdCounter.Instance.getNextId();
         setName(name);
         setAuthor(author);
         setPublishingDate(publishingDate);
@@ -22,72 +24,71 @@ public class BookModel {
     }
 
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
-    }
+
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getAuthor() {
-        return Author;
+        return author;
     }
 
     public void setAuthor(String author) {
-        Author = author;
+        this.author = author;
     }
 
     public Date getPublishingDate() {
-        return PublishingDate;
+        return publishingDate;
     }
 
     public void setPublishingDate(Date publishingDate) {
-        PublishingDate = publishingDate;
+        this.publishingDate = publishingDate;
     }
 
-    public Date getPickupDate() {
-        return PickupDate;
+    public Date getPickUpDate() {
+        return pickUpDate;
     }
 
-    public void setPickupDate(Date pickupDate) {
-        PickupDate = pickupDate;
+    public void setPickUpDate(Date pickUpDate, UserModel user) {
+        this.user = user;
+        this.pickUpDate = pickUpDate;
     }
 
     public Date getDropDate() {
-        return DropDate;
+        return dropDate;
     }
 
     public void setDropDate(Date dropDate) {
-        DropDate = dropDate;
+        this.dropDate = dropDate;
     }
 
     public String getBookText() {
-        return BookText;
+        return bookText;
     }
 
     public void setBookText(String bookText) {
-        BookText = bookText;
+        this.bookText = bookText;
     }
 
-    public String getUser() {
-        return User;
+    public UserModel getUser() {
+        return user;
     }
 
-    public void setUser(String user) {
-        User = user;
+    public void setUser(UserModel user) {
+        this.user = user;
     }
 
  public boolean isBusy () {
-        return getUser() == null ? false:true;
+        return getUser() != null;
  }
 
 }

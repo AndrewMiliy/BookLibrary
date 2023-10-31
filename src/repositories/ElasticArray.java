@@ -64,6 +64,15 @@ public class ElasticArray<T> {
         }
         return null; // Если не найдено соответствующих элементов
     }
+    public int findIndexOf(Predicate<T> predicate) {
+        for (int i = 0; i < size; i++) {
+            T element = (T) elements[i];
+            if (predicate.test(element)) {
+                return i;
+            }
+        }
+        return -1; // Если не найдено соответствующих элементов
+    }
 
     public List<T> findAll(Predicate<T> predicate) {
         List<T> foundElements = new ArrayList<>();

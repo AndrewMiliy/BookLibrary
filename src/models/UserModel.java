@@ -2,15 +2,16 @@ package models;
 
 import repositories.ElasticArray;
 
-import java.util.List;
-import java.util.function.Predicate;
-
 public class UserModel extends ElasticArray {
 
     private String firstName;
     private String lastName;
     private String email;
     private String password;
+
+    private UserRole userRole;
+
+    public int id = 0;
 
     public UserModel(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
@@ -47,8 +48,19 @@ public class UserModel extends ElasticArray {
         return password;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
 }

@@ -2,26 +2,35 @@ package repositories;
 
 import models.UserModel;
 
+import java.util.List;
+import java.util.function.Predicate;
+
 public class UserRepository {
-    ElasticArray users= new ElasticArray();
+    ElasticArray <UserModel> users = new ElasticArray <UserModel>();
 
-
-    private int usersCount;
 
     public void add(UserModel user) {
         users.add(user);
+
     }
     public void remove(UserModel user) {
-        users.remove(user);
+        users.remove(users.findIndexOf(x -> x.equals(user)));
     }
 
-    public boolean isExistsByEmail(String email) {
-        users.find( x -> Boolean.parseBoolean(email));
-        return ;
+    public UserModel getUser(Predicate<UserModel> predicate){
+        return users.find(predicate);
+    }
+    public List<UserModel> getUsers(Predicate<UserModel> predicate){
+        return users.findAll(predicate);
     }
 
-    public UserModel[] findAll() {
-        users.findAll();
+    public void editUser (UserModel user) {
 
+        UserModel targetUser = users.find(x -> x.equals(user.getId()));
+
+        targetUser.setEmail(targetUser.getEmail().equals(user.getEmail()) ? targetUser.getEmail() : user.getEmail());
+        targetUser.setFirstName(targetUser.getFirstName().equals(user.getFirstName()) ? targetUser.getFirstName() : user.getFirstName());
+        targetUser.setLastName(targetUser.getLastName().equals(user.getLastName()) ? targetUser.getLastName() : user.getLastName());
+        targetUser.setPassword(targetUser.getPassword().equals(user.getPassword()) ? targetUser.getPassword() : user.getPassword());
     }
 }
