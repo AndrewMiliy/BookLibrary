@@ -18,11 +18,10 @@ public class Validate {
 
         return matcher.matches();
 
-
     }
     public static boolean validateEmail(String email) {
         // Регулярное выражение для валидации email-адреса
-        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        String regex = "^[A-Za-z0-9+_.-]+@([A-Za-z0-9.-]+\\.[A-Za-z]{2,})$";
 
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(email);
