@@ -27,14 +27,14 @@ public class BookService {
     }
 
     // Узнать, сколько времени книга находится у пользователя
-    public long getBookDurationWithUser(BookModel book) {
-        if (book.getPickUpDate() != null && book.getDropDate() == null) {
-            return new Date().getTime() - book.getPickUpDate().getTime();
-        } else if (book.getPickUpDate() != null) {
-            return book.getDropDate().getTime() - book.getPickUpDate().getTime();
-        }
-        return 0;
-    }
+//    public long getBookDurationWithUser(BookModel book) {
+//        if (book.getPickUpDate() != null && book.getDropDate() == null) {
+//            return new Date().getTime() - book.getPickUpDate().getTime();
+//        } else if (book.getPickUpDate() != null) {
+//            return book.getDropDate().getTime() - book.getPickUpDate().getTime();
+//        }
+//        return 0;
+//    }
 
 
     // Добавить книгу (только для админа)

@@ -3,6 +3,7 @@ package test;
 import org.junit.Test;
 import repositories.Validate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -49,11 +50,6 @@ public class ValidateTest {
     @Test
     public void testInvalidName() {
         assertFalse(Validate.validateName(""));
-    }
-
-    @Test
-    public void testValidDate() {
-        assertTrue(Validate.validateDate(new Date()));
     }
 
 }

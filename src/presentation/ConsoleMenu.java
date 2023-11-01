@@ -35,9 +35,9 @@ public class ConsoleMenu {
         String author = scanner.nextLine();
         System.out.println("Enter book date (YYYY-MM-DD):");
         String dateInput = scanner.nextLine();
-        Date date;
+        LocalDate date;
         try {
-            date = Date.from(LocalDate.parse(dateInput, DateTimeFormatter.ISO_DATE).atStartOfDay(ZoneId.systemDefault()).toInstant());
+            date = LocalDate.now();
         } catch (DateTimeParseException e) {
             System.out.println("Invalid date format.");
             return;

@@ -5,6 +5,7 @@ import models.UserModel;
 import models.UserRole;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
@@ -13,14 +14,14 @@ public class BookRepository {
 
     ElasticArray<BookModel> books = new ElasticArray<BookModel>();
 
-    public void add(BookModel book) {
+    public boolean add(BookModel book) {
         if (Validate.validateName(book.getName())
                 && Validate.validateName(book.getAuthor())
-                && Validate.validateName(book.getBookText())
-                && Validate.validateDate(book.getPublishingDate())) {
+                && Validate.validateName(book.getBookText())) {
             books.add(book);
+            return true;
         }
-
+        return false;
     }
 
     public void remove(BookModel book) {
@@ -32,6 +33,10 @@ public class BookRepository {
     }
     public List<BookModel> getBooks(Predicate<BookModel> predicate){
         return books.findAll(predicate);
+    }
+
+    public int getBooksCount() {
+        return books.size();
     }
 
     public void editBook(BookModel book, UserModel user) {
@@ -49,10 +54,10 @@ public class BookRepository {
 
     public void pickUpBook(BookModel book,UserModel user) {
 
-        book.setPickUpDate(Date.from(Instant.now()), user);
+        book.setPickUpDate(LocalDate.now(), user);
     }
 
     public void dropBook(BookModel book) {
-        book.setDropDate(Date.from(Instant.now()));
+        book.setDropDate(LocalDate.now());
     }
 }

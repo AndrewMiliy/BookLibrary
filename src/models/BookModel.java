@@ -2,19 +2,20 @@ package models;
 
 import repositories.IdCounter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class BookModel {
     private int id;
     private String name;
     private String author;
-    private Date publishingDate;
-    private Date pickUpDate;
-    private Date dropDate;
+    private LocalDate publishingDate;
+    private LocalDate pickUpDate;
+    private LocalDate dropDate;
     private String bookText;
     private UserModel user;
 
-    public BookModel(String name, String author, Date publishingDate, String bookText) {
+    public BookModel(String name, String author, LocalDate publishingDate, String bookText) {
         this.id = IdCounter.Instance.getNextId();
         setName(name);
         setAuthor(author);
@@ -45,28 +46,28 @@ public class BookModel {
         this.author = author;
     }
 
-    public Date getPublishingDate() {
+    public LocalDate getPublishingDate() {
         return publishingDate;
     }
 
-    public void setPublishingDate(Date publishingDate) {
+    public void setPublishingDate(LocalDate publishingDate) {
         this.publishingDate = publishingDate;
     }
 
-    public Date getPickUpDate() {
+    public LocalDate getPickUpDate() {
         return pickUpDate;
     }
 
-    public void setPickUpDate(Date pickUpDate, UserModel user) {
+    public void setPickUpDate(LocalDate pickUpDate, UserModel user) {
         this.user = user;
         this.pickUpDate = pickUpDate;
     }
 
-    public Date getDropDate() {
+    public LocalDate getDropDate() {
         return dropDate;
     }
 
-    public void setDropDate(Date dropDate) {
+    public void setDropDate(LocalDate dropDate) {
         this.dropDate = dropDate;
     }
 
