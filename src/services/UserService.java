@@ -62,7 +62,14 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public void register(UserModel user) {
-        userRepository.add(user);
+    public boolean register(UserModel user) {
+        if(userRepository.add(user))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

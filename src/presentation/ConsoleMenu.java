@@ -115,21 +115,32 @@ public class ConsoleMenu {
     }
 
     private void registerUser() {
-        System.out.println("Enter username:");
-        String username = scanner.nextLine();
+        System.out.println("Enter firstName:");
+        String firstName = scanner.nextLine();
+        System.out.println("Enter lastName:");
+        String lastName = scanner.nextLine();
+        System.out.println("Enter email:");
+        String email = scanner.nextLine();
         System.out.println("Enter password:");
         String password = scanner.nextLine();
-        UserModel user = new UserModel(username, password);
-        userService.register(user);
-        System.out.println("User registered successfully!");
+        UserModel user = new UserModel(firstName, lastName, email, password);
+        if(userService.register(user))
+        {
+            System.out.println("User registered successfully!");
+            currentUser = user;
+        }
+        else
+        {
+            System.out.println("Some error occurred.");
+        }
     }
 
     private void authorizeUser() {
-        System.out.println("Enter username:");
-        String username = scanner.nextLine();
+        System.out.println("Enter email:");
+        String email = scanner.nextLine();
         System.out.println("Enter password:");
         String password = scanner.nextLine();
-        currentUser = userService.authorize(username, password);
+        currentUser = userService.authorize(email, password);
         if (currentUser != null) {
             System.out.println("Logged in successfully!");
         } else {

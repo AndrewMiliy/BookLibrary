@@ -26,9 +26,6 @@ public class UserModel {
         this.password = password;
     }
 
-    public UserModel(String username, String password) {
-    }
-
     public String getFirstName() {
         return firstName;
     }
