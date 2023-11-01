@@ -9,13 +9,15 @@ public class UserRepository {
     ElasticArray <UserModel> users = new ElasticArray <UserModel>();
 
 
-    public void add(UserModel user) {
+    public boolean add(UserModel user) {
         if (Validate.validateEmail(user.getEmail())
                 && Validate.isPasswordValid(user.getPassword())
                 && Validate.validateName(user.getFirstName())
                 && Validate.validateName(user.getLastName())) {
             users.add(user);
+            return true;
         }
+        return false;
     }
 
     public void remove(UserModel user) {

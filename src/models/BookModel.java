@@ -22,6 +22,9 @@ public class BookModel {
         setBookText(bookText);
     }
 
+    public BookModel(String title, String author) {
+    }
+
     public int getId() {
         return id;
     }
