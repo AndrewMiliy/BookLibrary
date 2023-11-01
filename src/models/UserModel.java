@@ -2,6 +2,9 @@ package models;
 
 import repositories.ElasticArray;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class UserModel {
 
     private String firstName;
@@ -11,6 +14,9 @@ public class UserModel {
 
     private UserRole userRole;
 
+    // Список ID книг, которые у пользователя
+    private List<Integer> bookIds;
+
     public int id = 0;
 
     public UserModel(String firstName, String lastName, String email, String password) {
@@ -18,6 +24,9 @@ public class UserModel {
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+    }
+
+    public UserModel(String username, String password) {
     }
 
     public String getFirstName() {
@@ -62,5 +71,17 @@ public class UserModel {
 
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
+    }
+
+    public List<Integer> getBookIds() {
+        return bookIds;
+    }
+
+    public void addBookId(int bookId) {
+        bookIds.add(bookId);
+    }
+
+    public void removeBookId(int bookId) {
+        bookIds.remove(Integer.valueOf(bookId));
     }
 }

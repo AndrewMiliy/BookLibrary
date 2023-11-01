@@ -19,6 +19,9 @@ public class Validate {
 
     }
     public static boolean validateEmail(String email) {
+        if (email == null) {
+            return false;
+        }
         // Регулярное выражение для валидации email-адреса
         String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
 

@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class BookRepository {
-    ElasticArray<BookModel> books = new ElasticArray<BookModel>();
 
+    ElasticArray<BookModel> books = new ElasticArray<BookModel>();
 
     public void add(BookModel book) {
         books.add(book);
