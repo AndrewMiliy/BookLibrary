@@ -14,7 +14,12 @@ public class BookRepository {
 
 
     public void add(BookModel book) {
-        books.add(book);
+        if (Validate.validateName(book.getName())
+                && Validate.validateName(book.getAuthor())
+                && Validate.validateName(book.getBookText())
+                && Validate.validateDate(book.getPublishingDate())) {
+            books.add(book);
+        }
 
     }
 
