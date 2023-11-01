@@ -32,5 +32,7 @@ public class ValidateTest {
         assertFalse(Validate.validateEmail("invalid-email"));
         assertFalse(Validate.validateEmail("no@tld"));
         assertFalse(Validate.validateEmail("spaces @ notallowed.com"));
+        assertFalse (Validate.validateEmail("spaces@gmail.c"));
+
     }
 }
