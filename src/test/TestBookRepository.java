@@ -4,6 +4,7 @@ import models.BookModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import repositories.ElasticArray;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -14,6 +15,8 @@ import java.util.Date;
 public class TestBookRepository {
 
     BookModel book;
+
+    ElasticArray<BookModel> books = new ElasticArray<BookModel>();
 
     String startName = "Heart of the Dragon";
     String startAuthor = "Kirill Klevanskii";
@@ -29,10 +32,10 @@ public class TestBookRepository {
     }
 
     @Test
-    void testValidBookName() {
-    String validBookName = "Мастер и Маргарита";
-    book.setName(validBookName);
-    Assertions.assertEquals(validBookName, book.getName());
+    void testBookAdd() {
+    BookModel testBookAdd = new BookModel("Master i Margarita", "M. Bulgakov", new Date(), "Жили были не тужили")
+
+    Assertions.assertEquals(validBookAdd, books.add(book));
     }
 
     @Test
