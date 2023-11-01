@@ -1,5 +1,10 @@
 package models;
 
+<<<<<<< HEAD
+=======
+import repositories.ElasticArray;
+
+>>>>>>> feature/Model
 public class UserModel {
 
     private String firstName;
