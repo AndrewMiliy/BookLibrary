@@ -17,6 +17,7 @@ public class UserRepository {
             users.add(user);
         }
     }
+
     public void remove(UserModel user) {
         users.remove(users.findIndexOf(x -> x.equals(user)));
     }

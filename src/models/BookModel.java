@@ -6,7 +6,6 @@ import java.util.Date;
 
 public class BookModel {
     private int id;
-
     private String name;
     private String author;
     private Date publishingDate;
@@ -23,12 +22,9 @@ public class BookModel {
         setBookText(bookText);
     }
 
-
     public int getId() {
         return id;
     }
-
-
 
     public String getName() {
         return name;

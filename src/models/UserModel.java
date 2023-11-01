@@ -2,7 +2,7 @@ package models;
 
 import repositories.ElasticArray;
 
-public class UserModel extends ElasticArray {
+public class UserModel {
 
     private String firstName;
     private String lastName;
