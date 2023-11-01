@@ -56,7 +56,11 @@ public class UserService {
     }
 
     public List<BookModel> getBooksForUser(UserModel user) {
-        return user.getBookIds().stream()
+        List<Integer> bookIds = user.getBookIds();
+        if (bookIds == null) {
+            return new ArrayList<>();
+        }
+        return bookIds.stream()
                 .map(bookId -> bookRepository.getBook(b -> b.getId() == bookId))
                 .filter(book -> book != null)
                 .collect(Collectors.toList());

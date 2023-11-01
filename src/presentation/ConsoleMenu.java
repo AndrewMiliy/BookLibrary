@@ -163,6 +163,11 @@ public class ConsoleMenu {
             return;
         }
         List<BookModel> books = userService.getBooksForUser(currentUser);
+        if(books.isEmpty())
+        {
+            System.out.println("No books found.");
+            return;
+        }
         for (BookModel book : books) {
             System.out.println(book);
         }
