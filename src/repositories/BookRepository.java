@@ -45,6 +45,7 @@ public class BookRepository {
     }
 
     public void remove(BookModel book) {
+
         books.remove(books.findIndexOf(x -> x.equals(book)));
     }
 
@@ -59,17 +60,23 @@ public class BookRepository {
         return books.size();
     }
 
-    public void editBook(BookModel book, UserModel user) {
+    public boolean editBook(BookModel book, UserModel user) {
         if (user.getUserRole() == UserRole.Admin) {
+            if (!Validate.validateName(book.getName()) || !Validate.validateName(book.getAuthor()) || !Validate.validateName(book.getBookText())) {
+                return false;
+            }
+                BookModel targetBook = books.find(x -> x.equals(book.getId()));
 
-            BookModel targetBook = books.find(x -> x.equals(book.getId()));
 
+                targetBook.setPublishingDate(targetBook.getPublishingDate().equals(book.getPublishingDate()) ? targetBook.getPublishingDate() : book.getPublishingDate());
+                targetBook.setName(targetBook.getName().equals(book.getName()) ? targetBook.getName() : book.getName());
+                targetBook.setAuthor(targetBook.getAuthor().equals(book.getAuthor()) ? targetBook.getAuthor() : book.getAuthor());
+                targetBook.setBookText(targetBook.getBookText().equals(book.getBookText()) ? targetBook.getBookText() : book.getBookText());
 
-            targetBook.setPublishingDate(targetBook.getPublishingDate().equals(book.getPublishingDate()) ? targetBook.getPublishingDate() : book.getPublishingDate());
-            targetBook.setName(targetBook.getName().equals(book.getName()) ? targetBook.getName() : book.getName());
-            targetBook.setAuthor(targetBook.getAuthor().equals(book.getAuthor()) ? targetBook.getAuthor() : book.getAuthor());
-            targetBook.setBookText(targetBook.getBookText().equals(book.getBookText()) ? targetBook.getBookText() : book.getBookText());
-        }
+                return true;
+            }
+
+        return false;
     }
 
     public void pickUpBook(BookModel book,UserModel user) {
