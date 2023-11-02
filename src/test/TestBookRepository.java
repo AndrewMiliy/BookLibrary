@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repositories.BookRepository;
+import repositories.Validate;
 
 import java.time.LocalDate;
 
@@ -86,15 +87,48 @@ public class TestBookRepository {
         BookModel removedBook = books.getBook(x -> x.getName().equals("Master i Margarita"));
         Assertions.assertNull(removedBook);
     }
-//    @Test
-//    void testInvalidBookRemove() {
-//        BookModel testInvalidBookRemove = new BookModel("Master i Margarita", "M. Bulgakov", LocalDate.of(1960, 1, 1), "Жили были не тужили");
-//        books.add(testInvalidBookRemove);
-//
-//        books.remove(testInvalidBookRemove);
-//        BookModel removedBook = books.getBook(x -> x.getName().equals("Master i Margarita"));
-//        Assertions.assertNull(removedBook);
-//    }
-//    
+    @Test
+    void testInvalidBookRemove() {
+        BookModel nonExistingBook = new BookModel("Non-Existing Book", "Unknown Author", LocalDate.of(2000, 1, 1), "Description");
+
+        try {
+            books.remove(nonExistingBook);
+        } catch (Exception e) {
+        }
+
+        BookModel removedBook = books.getBook(x -> x.getName().equals("Non-Existing Book"));
+        Assertions.assertNull(removedBook);
+    }
+
+    @Test
+    void testValidEditBook() {
+        BookModel testValidEditBook = new BookModel("Master i Margarita", "M. Bulgakov", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+        BookModel testValidEditBook1 = new BookModel("Master i Margarita", "M. Bulgakov", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+        books.add(testValidEditBook);
+        books.add(testValidEditBook1);
+
+        testValidEditBook.setName("M&M");
+        testValidEditBook.setAuthor("MB");
+        testValidEditBook.setPublishingDate(LocalDate.of(1333,12,13));
+        testValidEditBook.setBookText("Zhili-bili ne tuzhili.");
+        Assertions.assertNotEquals(testValidEditBook, testValidEditBook1);
+    }
+
+    @Test
+    void testInvalidEditBook() {
+        BookModel testInvalidEditBook1 = new BookModel("Master i Margarita", "M. Bulgakov", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+        BookModel testInvalidEditBook2 = new BookModel("Master i Margarita", "M. Bulgakov", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+        BookModel testInvalidEditBook3 = new BookModel("Master i Margarita", "M. Bulgakov", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+        books.add(testInvalidEditBook1);
+        books.add(testInvalidEditBook2);
+        books.add(testInvalidEditBook3);
+
+        testInvalidEditBook1.setName("");
+        Assertions.assertFalse(Validate.validateName(testInvalidEditBook1.getName()));
+        testInvalidEditBook2.setAuthor("");
+        Assertions.assertFalse(Validate.validateName(testInvalidEditBook2.getAuthor()));
+        testInvalidEditBook3.setBookText("");
+        Assertions.assertFalse(Validate.validateName(testInvalidEditBook3.getBookText()));
+    }
 
 }

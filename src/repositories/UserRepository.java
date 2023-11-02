@@ -2,11 +2,31 @@ package repositories;
 
 import models.UserModel;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
 public class UserRepository {
     ElasticArray<UserModel> users = new ElasticArray<UserModel>();
+
+    private final String filename = "USERDB.txt";
+
+    public void saveUsers() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            oos.writeObject(users);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public  void loadUsers() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+            users = (ElasticArray <models.UserModel>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public boolean add(UserModel user) {
@@ -36,9 +56,18 @@ public class UserRepository {
         return users.size();
     }
 
+<<<<<<< HEAD
     public boolean editUser(UserModel user) {
         if (!Validate.validateName(user.getFirstName()) || !Validate.validateName(user.getLastName()) || !Validate.validateEmail(user.getEmail()) || !Validate.isPasswordValid(user.getPassword())) {
             return false;
+=======
+    public boolean editUser (UserModel user) {
+        if (!Validate.validateName(user.getFirstName())
+                || !Validate.validateName(user.getLastName())
+                || !Validate.validateEmail(user.getEmail())
+                || !Validate.isPasswordValid(user.getPassword())) {
+        return false;
+>>>>>>> 64ddbc5ceef84e1bc6a2be295e9b763363da35b3
         }
         UserModel targetUser = users.find(x -> x.equals(user.getId()));
 
@@ -49,6 +78,13 @@ public class UserRepository {
         return true;
     }
 
+<<<<<<< HEAD
     public void saveUsers() {
     }
 }
+=======
+
+
+
+}
+>>>>>>> 64ddbc5ceef84e1bc6a2be295e9b763363da35b3

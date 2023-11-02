@@ -41,6 +41,7 @@ public class BookService {
     public void addBook(BookModel book, UserModel admin) {
         if (admin.getUserRole() == UserRole.Admin) {
             bookRepository.add(book);
+            bookRepository.saveBooks();
         } else {
             System.out.println("Только администратор может добавить новую книгу.");
         }
@@ -51,6 +52,7 @@ public class BookService {
         if (admin.getUserRole() == UserRole.Admin) {
             BookModel bookToDelete = bookRepository.getBook(b -> b.getId() == id);
             bookRepository.remove(bookToDelete);
+            bookRepository.saveBooks();
         } else {
             System.out.println("Удалить книгу может только администратор.");
         }
