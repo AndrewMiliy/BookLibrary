@@ -56,35 +56,30 @@ public class UserRepository {
         return users.size();
     }
 
-<<<<<<< HEAD
-    public boolean editUser(UserModel user) {
-        if (!Validate.validateName(user.getFirstName()) || !Validate.validateName(user.getLastName()) || !Validate.validateEmail(user.getEmail()) || !Validate.isPasswordValid(user.getPassword())) {
-            return false;
-=======
-    public boolean editUser (UserModel user) {
-        if (!Validate.validateName(user.getFirstName())
-                || !Validate.validateName(user.getLastName())
-                || !Validate.validateEmail(user.getEmail())
-                || !Validate.isPasswordValid(user.getPassword())) {
-        return false;
->>>>>>> 64ddbc5ceef84e1bc6a2be295e9b763363da35b3
+
+
+            public boolean editUser (UserModel user){
+                if (!Validate.validateName(user.getFirstName())
+                        || !Validate.validateName(user.getLastName())
+                        || !Validate.validateEmail(user.getEmail())
+                        || !Validate.isPasswordValid(user.getPassword())) {
+                    return false;
+
+                }
+                UserModel targetUser = users.find(x -> x.getId()== user.getId());
+
+                targetUser.setEmail(targetUser.getEmail().equals(user.getEmail()) ? targetUser.getEmail() : user.getEmail());
+                targetUser.setFirstName(targetUser.getFirstName().equals(user.getFirstName()) ? targetUser.getFirstName() : user.getFirstName());
+                targetUser.setLastName(targetUser.getLastName().equals(user.getLastName()) ? targetUser.getLastName() : user.getLastName());
+                targetUser.setPassword(targetUser.getPassword().equals(user.getPassword()) ? targetUser.getPassword() : user.getPassword());
+                return true;
+            }
+
+
+
         }
-        UserModel targetUser = users.find(x -> x.equals(user.getId()));
-
-        targetUser.setEmail(targetUser.getEmail().equals(user.getEmail()) ? targetUser.getEmail() : user.getEmail());
-        targetUser.setFirstName(targetUser.getFirstName().equals(user.getFirstName()) ? targetUser.getFirstName() : user.getFirstName());
-        targetUser.setLastName(targetUser.getLastName().equals(user.getLastName()) ? targetUser.getLastName() : user.getLastName());
-        targetUser.setPassword(targetUser.getPassword().equals(user.getPassword()) ? targetUser.getPassword() : user.getPassword());
-        return true;
-    }
-
-<<<<<<< HEAD
-    public void saveUsers() {
-    }
-}
-=======
 
 
 
-}
->>>>>>> 64ddbc5ceef84e1bc6a2be295e9b763363da35b3
+
+

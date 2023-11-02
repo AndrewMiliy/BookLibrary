@@ -2,6 +2,7 @@ package test;
 import models.UserModel;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import repositories.UserRepository;
 
 import static org.junit.Assert.*;
@@ -20,7 +21,7 @@ public class UserRepositoryTest {
 
     @Test
     public void testAddValidUser() {
-        UserModel user = new UserModel("John", "Doe", "john.doe@example.com", "StrongPassword123");
+        UserModel user = new UserModel("John", "Doe", "john.doe@example.com", "StrongPassword123+");
         assertTrue(userRepository.add(user));
         assertEquals(1, userRepository.getUserCount());
     }
@@ -34,7 +35,7 @@ public class UserRepositoryTest {
 
     @Test
     public void testRemoveUser() {
-        UserModel user = new UserModel("John", "Doe", "john.doe@example.com", "StrongPassword123");
+        UserModel user = new UserModel("John", "Doe", "john.doe@example.com", "StrongPassword123+");
         userRepository.add(user);
         userRepository.remove(user);
         assertEquals(0, userRepository.getUserCount());
@@ -42,7 +43,7 @@ public class UserRepositoryTest {
 
     @Test
     public void testGetUser() {
-        UserModel user = new UserModel("John", "Doe", "john.doe@example.com", "StrongPassword123");
+        UserModel user = new UserModel("John", "Doe", "john.doe@example.com", "StrongPassword123+");
         userRepository.add(user);
 
         Predicate<UserModel> predicate = u -> u.getEmail().equals("john.doe@example.com");
@@ -54,13 +55,13 @@ public class UserRepositoryTest {
 
     @Test
     public void testGetUsers() {
-        UserModel user1 = new UserModel("John", "Doe", "john.doe@example.com", "StrongPassword123");
-        UserModel user2 = new UserModel("Jane", "Smith", "jane.smith@example.com", "AnotherPassword123");
+        UserModel user1 = new UserModel("John", "Doe", "john.doe@example.com", "StrongPassword123+");
+        UserModel user2 = new UserModel("Jane", "Smith", "jane.smith@example.com", "AnotherPassword123+");
 
         userRepository.add(user1);
         userRepository.add(user2);
 
-        Predicate<UserModel> predicate = u -> u.getPassword().contains("Password123");
+        Predicate<UserModel> predicate = u -> !u.getEmail().isEmpty();
         List<UserModel> users = userRepository.getUsers(predicate);
 
         assertEquals(2, users.size());
@@ -68,23 +69,27 @@ public class UserRepositoryTest {
 
     @Test
     public void testEditUserValid() {
-        UserModel user = new UserModel("John", "Doe", "john.doe@example.com", "StrongPassword123");
+        UserModel user = new UserModel("John", "Doe", "john.doe@example.com", "StrongPassword123+");
         userRepository.add(user);
 
-        UserModel updatedUser = new UserModel( "Jane", "Smith", "jane.smith@example.com", "NewPassword123");
-        assertTrue(userRepository.editUser(updatedUser));
+        //UserModel updatedUser = new UserModel("Jane", "Smith", "jane.smith@example.com", "NewPassword123+");
+         user.setFirstName("Jane");
+         user.setLastName("Smith");
+         user.setEmail("jane.smith@example.com");
+         user.setPassword("NewPassword123+");
+         assertTrue(userRepository.editUser(user));
 
-        UserModel retrievedUser = userRepository.getUser(u -> Boolean.parseBoolean(u.getEmail()));
+        UserModel retrievedUser = userRepository.getUser(x->x.getId()==user.getId());
         assertEquals("Jane", retrievedUser.getFirstName());
         assertEquals("Smith", retrievedUser.getLastName());
         assertEquals("jane.smith@example.com", retrievedUser.getEmail());
-        assertEquals("NewPassword123", retrievedUser.getPassword());
+        assertEquals("NewPassword123+", retrievedUser.getPassword());
     }
 
     @Test
     public void testValidSafeUsers() {
-        UserModel user = new UserModel("John","Doe", "asd@asd.asd", "Qwerty1+");
-        UserModel user1 = new UserModel("Johny","Sins", "johnysins777@ww.mma", "Asdrft3#");
+        UserModel user = new UserModel("John", "Doe", "asd@asd.asd", "Qwerty1+");
+        UserModel user1 = new UserModel("Johny", "Sins", "johnysins777@ww.mma", "Asdrft3#");
         userRepository.add(user);
         userRepository.add(user1);
         userRepository.saveUsers();
@@ -95,3 +100,4 @@ public class UserRepositoryTest {
         Assertions.assertTrue(user.getFirstName().equals("John") && user.getLastName().equals("Doe") && user.getEmail().equals("asd@asd.asd") && user.getPassword().equals("Qwerty1+"));
         Assertions.assertTrue(user1.getFirstName().equals("Johny") && user1.getLastName().equals("Sins") && user1.getEmail().equals("johnysins777@ww.mma") && user1.getPassword().equals("Asdrft3#"));
     }
+}
