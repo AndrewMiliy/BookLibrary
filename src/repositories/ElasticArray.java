@@ -1,11 +1,18 @@
 package repositories;
 
+import models.UserModel;
+
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ElasticArray<T> {
+public class ElasticArray<T> implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Object[] elements;
     private int size;
 
@@ -84,6 +91,7 @@ public class ElasticArray<T> {
         }
         return foundElements;
     }
+
 
 
 }

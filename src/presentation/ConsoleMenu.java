@@ -128,6 +128,8 @@ public class ConsoleMenu {
         {
             System.out.println("User registered successfully!");
             currentUser = user;
+            currentUser.setUserRole(UserRole.Admin);
+            userService.saveUsers();
         }
         else
         {

@@ -2,10 +2,12 @@ package models;
 
 import repositories.IdCounter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
 
-public class BookModel {
+public class BookModel implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int id;
     private String name;
     private String author;

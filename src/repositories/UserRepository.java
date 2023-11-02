@@ -2,12 +2,32 @@ package repositories;
 
 import models.UserModel;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
 public class UserRepository {
     ElasticArray <UserModel> users = new ElasticArray <UserModel>();
 
+    private final String filename = "USERDB.txt";
+
+    public void saveUsers() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            oos.writeObject(users);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public  ElasticArray <UserModel> loadUsers() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+            return (ElasticArray <models.UserModel>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ElasticArray <>();
+        }
+    }
 
     public boolean add(UserModel user) {
         if (Validate.validateEmail(user.getEmail())

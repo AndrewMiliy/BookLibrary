@@ -2,10 +2,12 @@ package models;
 
 import repositories.ElasticArray;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-public class UserModel {
+public class UserModel implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private String firstName;
     private String lastName;

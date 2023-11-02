@@ -76,4 +76,8 @@ public class UserService {
             return false;
         }
     }
+
+    public void saveUsers() {
+        userRepository.saveUsers();
+    }
 }

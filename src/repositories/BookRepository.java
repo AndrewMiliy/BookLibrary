@@ -4,6 +4,7 @@ import models.BookModel;
 import models.UserModel;
 import models.UserRole;
 
+import java.io.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
@@ -13,6 +14,25 @@ import java.util.function.Predicate;
 public class BookRepository {
 
     ElasticArray<BookModel> books = new ElasticArray<BookModel>();
+
+    private final String filename = "BOOKDB.txt";
+
+    public void saveBooks() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            oos.writeObject(books);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ElasticArray<BookModel> loadBooks() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+            return (ElasticArray<BookModel>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ElasticArray<>();
+        }
+    }
 
     public boolean add(BookModel book) {
         if (Validate.validateName(book.getName())
