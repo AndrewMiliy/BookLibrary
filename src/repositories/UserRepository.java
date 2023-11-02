@@ -35,15 +35,22 @@ public class UserRepository {
         return users.size();
     }
 
-    public void editUser (UserModel user) {
-
+    public boolean editUser (UserModel user) {
+        if (!Validate.validateName(user.getFirstName())
+                || !Validate.validateName(user.getLastName())
+                || !Validate.validateEmail(user.getEmail())
+                || !Validate.isPasswordValid(user.getPassword())) {
+        return false;
+        }
         UserModel targetUser = users.find(x -> x.equals(user.getId()));
 
         targetUser.setEmail(targetUser.getEmail().equals(user.getEmail()) ? targetUser.getEmail() : user.getEmail());
         targetUser.setFirstName(targetUser.getFirstName().equals(user.getFirstName()) ? targetUser.getFirstName() : user.getFirstName());
         targetUser.setLastName(targetUser.getLastName().equals(user.getLastName()) ? targetUser.getLastName() : user.getLastName());
         targetUser.setPassword(targetUser.getPassword().equals(user.getPassword()) ? targetUser.getPassword() : user.getPassword());
+        return true;
     }
+
 
 
 
