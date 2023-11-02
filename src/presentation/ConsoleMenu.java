@@ -4,7 +4,9 @@ import models.BookModel;
 import models.UserModel;
 import models.UserRole;
 import repositories.BookRepository;
+import repositories.HashedPassword;
 import repositories.UserRepository;
+import repositories.Validate;
 import services.BookService;
 import services.UserService;
 
@@ -121,8 +123,15 @@ public class ConsoleMenu {
         String lastName = scanner.nextLine();
         System.out.println("Enter email:");
         String email = scanner.nextLine();
-        System.out.println("Enter password:");
         String password = scanner.nextLine();
+        if(!Validate.isPasswordValid(password))
+        {
+            password = HashedPassword.hashPassword(scanner.nextLine());
+        }
+        else
+        {
+            System.out.println("Invalid password, try again.");
+        }
         UserModel user = new UserModel(firstName, lastName, email, password);
         if(userService.register(user))
         {
@@ -141,7 +150,7 @@ public class ConsoleMenu {
         System.out.println("Enter email:");
         String email = scanner.nextLine();
         System.out.println("Enter password:");
-        String password = scanner.nextLine();
+        String password = HashedPassword.hashPassword(scanner.nextLine());
         currentUser = userService.authorize(email, password);
         if (currentUser != null) {
             System.out.println("Logged in successfully!");
@@ -154,7 +163,7 @@ public class ConsoleMenu {
         System.out.println("Enter username:");
         String username = scanner.nextLine();
         System.out.println("Enter new password:");
-        String newPassword = scanner.nextLine();
+        String newPassword = HashedPassword.hashPassword(scanner.nextLine());
         userService.recoverPassword(username, newPassword);
         System.out.println("Password reset successfully!");
     }
@@ -300,9 +309,15 @@ public class ConsoleMenu {
     public static void main(String[] args) {
         BookRepository bookRepository = new BookRepository();
         UserRepository userRepository = new UserRepository();
+
         BookService bookService = new BookService(bookRepository);
         UserService userService = new UserService(userRepository, bookRepository);
+
         ConsoleMenu consoleMenu = new ConsoleMenu(bookService, userService);
+
+        bookRepository.loadBooks();
+        userRepository.loadUsers();
+
         consoleMenu.showMainMenu();
     }
 }

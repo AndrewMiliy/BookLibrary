@@ -1,6 +1,7 @@
 package models;
 
 import repositories.ElasticArray;
+import repositories.HashedPassword;
 
 import java.io.Serializable;
 import java.util.Arrays;

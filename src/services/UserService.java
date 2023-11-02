@@ -39,7 +39,7 @@ public class UserService {
     // Авторизация
     public UserModel authorize(String email, String password) {
         UserModel user = userRepository.getUser(u -> u.getEmail().equals(email));
-        if (user != null && user.getPassword().equals(HashedPassword.hashPassword(password))) {
+        if (user != null && user.getPassword().equals(password)) {
             return user;
         }
         return null;
