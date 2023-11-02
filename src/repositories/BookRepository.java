@@ -25,14 +25,14 @@ public class BookRepository {
         }
     }
 
-    public ElasticArray<BookModel> loadBooks() {
+    public void loadBooks() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
-            return (ElasticArray<BookModel>) ois.readObject();
+            books =  (ElasticArray<BookModel>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-            return new ElasticArray<>();
         }
     }
+
 
     public boolean add(BookModel book) {
         if (Validate.validateName(book.getName())

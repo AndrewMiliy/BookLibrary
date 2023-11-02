@@ -20,14 +20,14 @@ public class UserRepository {
         }
     }
 
-    public  ElasticArray <UserModel> loadUsers() {
+    public  void loadUsers() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
-            return (ElasticArray <models.UserModel>) ois.readObject();
+            users = (ElasticArray <models.UserModel>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-            return new ElasticArray <>();
         }
     }
+
 
     public boolean add(UserModel user) {
         if (Validate.validateEmail(user.getEmail())
