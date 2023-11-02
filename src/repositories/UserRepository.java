@@ -31,6 +31,10 @@ public class UserRepository {
         return users.findAll(predicate);
     }
 
+    public int getUserCount() {
+        return users.size();
+    }
+
     public void editUser (UserModel user) {
 
         UserModel targetUser = users.find(x -> x.equals(user.getId()));

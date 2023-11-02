@@ -4,90 +4,97 @@ import models.BookModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import repositories.BookRepository;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
+
 
 public class TestBookRepository {
 
     BookModel book;
 
+    BookRepository books;
+
+
     String startName = "Heart of the Dragon";
     String startAuthor = "Kirill Klevanskii";
-    LocalDate date = LocalDate.parse("2000-10-10");
-    ZonedDateTime zonedDateTime = date.atStartOfDay(ZoneId.systemDefault());
-    Instant instant = zonedDateTime.toInstant();
-    Date startPublishingDate = Date.from(instant);
+    LocalDate startPublishingDate = LocalDate.of(2019,03,22);
     String startBookText = "This story begins from a ...";
 
     @BeforeEach
     void setUp() {
+        books = new BookRepository();
         book = new BookModel(startName, startAuthor, startPublishingDate, startBookText);
     }
 
     @Test
-    void testValidBookName() {
-    String validBookName = "Мастер и Маргарита";
-    book.setName(validBookName);
-    Assertions.assertEquals(validBookName, book.getName());
+    void testValidBookAdd() {
+        BookModel testValidBookAdd = new BookModel("Master i Margarita", "M. Bulgakov", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+        Assertions.assertTrue(books.add(testValidBookAdd));
     }
 
     @Test
-    void testInvalidBookName() {
-        String invalidBookName = "";
-        book.setName(invalidBookName);
-        Assertions.assertEquals(startName, book.getName());
+    void testInvalidBookAdd() {
+        BookModel testInvalidBookAdd1 = new BookModel("", "M. Bulgakov", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+        BookModel testInvalidBookAdd2 = new BookModel("Master i Margarita", "", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+        BookModel testInvalidBookAdd3 = new BookModel("Master i Margarita", "M. Bulgakov", LocalDate.of(1960, 1, 1), "");
+        Assertions.assertFalse(books.add(testInvalidBookAdd1));
+        Assertions.assertFalse(books.add(testInvalidBookAdd2));
+        Assertions.assertFalse(books.add(testInvalidBookAdd3));
     }
 
     @Test
-    void testValidAuthor() {
-        String validBookAuthor = "М. Булгаков";
-        book.setAuthor(validBookAuthor);
-        Assertions.assertEquals(validBookAuthor, book.getAuthor());
+    void testValidGetBook() {
+        BookModel testValidGetBook = new BookModel("Master i Margarita", "M. Bulgakov", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+        books.add(testValidGetBook);
+
+        BookModel retrievedBook = books.getBook(x -> x.getName().equals("Master i Margarita"));
+        Assertions.assertNotNull(retrievedBook);
+    }
+    @Test
+    void testInvalidGetBook() {
+        BookModel testInvalidGetBook = new BookModel("Master i Margarita", "M. Bulgakov", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+        books.add(testInvalidGetBook);
+
+        BookModel retrievedBook = books.getBook(x -> x.getName().equals("Master Margarita"));
+        Assertions.assertNull(retrievedBook);
     }
 
     @Test
-    void testInvalidAuthor() {
-        String invalidBookAuthor = "";
-        book.setAuthor(invalidBookAuthor);
-        Assertions.assertEquals(startAuthor, book.getAuthor());
+    void testValidGetBooks() {
+        BookModel testValidGetBooks = new BookModel("Master i Margarita", "M. Bulgakov", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+        books.add(testValidGetBooks);
+        Assertions.assertTrue(books.getBooks(x -> x.getName().equals("Master i Margarita")).contains(testValidGetBooks));
+    }
+
+
+    @Test
+    void testInvalidGetBooks() {
+        BookModel testInvalidGetBooks = new BookModel("Master i Margarita", "M. Bulgakov", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+        BookModel testInvalidGetBooks2 = new BookModel("Master i Margarita2", "M. Bulgakov2", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+        books.add(testInvalidGetBooks);
+        books.add(testInvalidGetBooks2);
+        Assertions.assertFalse(books.getBooks(x -> x.getName().equals("Master Margarita")).contains(testInvalidGetBooks));
     }
 
     @Test
-    void testValidBookText() {
-        String validBookText = "Жили были, !не тужили!.";
-        book.setBookText(validBookText);
-        Assertions.assertEquals(validBookText, book.getBookText());
-    }
+    void testValidBookRemove() {
+        BookModel testValidBookRemove = new BookModel("Master i Margarita", "M. Bulgakov", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+        books.add(testValidBookRemove);
 
-    @Test
-    void testInvalidBookText() {
-        String invalidBookText = "";
-        book.setBookText(invalidBookText);
-        Assertions.assertEquals(startBookText, book.getBookText());
+        books.remove(testValidBookRemove);
+        BookModel removedBook = books.getBook(x -> x.getName().equals("Master i Margarita"));
+        Assertions.assertNull(removedBook);
     }
-
-    @Test
-    void testValidPublishingDate() {
-        LocalDate date = LocalDate.parse("1980-12-01");
-        ZonedDateTime zonedDateTime = date.atStartOfDay(ZoneId.systemDefault());
-        Instant instant = zonedDateTime.toInstant();
-        Date validPublishingDate = Date.from(instant);
-        book.setPublishingDate(validPublishingDate);
-        Assertions.assertEquals(validPublishingDate, book.getPublishingDate());
-    }
-
-    @Test
-    void testInvalidPublishingDate() {
-        LocalDate date = LocalDate.parse("");
-        ZonedDateTime zonedDateTime = date.atStartOfDay(ZoneId.systemDefault());
-        Instant instant = zonedDateTime.toInstant();
-        Date invalidPublishingDate = Date.from(instant);
-        book.setPublishingDate(invalidPublishingDate);
-        Assertions.assertEquals(startPublishingDate, book.getPublishingDate());
-    }
+//    @Test
+//    void testInvalidBookRemove() {
+//        BookModel testInvalidBookRemove = new BookModel("Master i Margarita", "M. Bulgakov", LocalDate.of(1960, 1, 1), "Жили были не тужили");
+//        books.add(testInvalidBookRemove);
+//
+//        books.remove(testInvalidBookRemove);
+//        BookModel removedBook = books.getBook(x -> x.getName().equals("Master i Margarita"));
+//        Assertions.assertNull(removedBook);
+//    }
+//    
 
 }

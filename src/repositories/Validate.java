@@ -1,5 +1,6 @@
 package repositories;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -39,19 +40,6 @@ public class Validate {
         return true;
     }
 
-    public static boolean validateDate(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
 
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int month = calendar.get(Calendar.MONTH) + 1; // Month is 0-based in Calendar, so add 1.
-
-        if (day == 0 || month == 0) {
-            return false;
-        }
-
-        // You can add additional validation for the year here if needed.
-        return true;
-    }
 
 }

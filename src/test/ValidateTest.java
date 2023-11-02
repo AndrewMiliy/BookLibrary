@@ -1,6 +1,12 @@
-package repositories;
+package test;
 
 import org.junit.Test;
+import repositories.Validate;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -35,4 +41,15 @@ public class ValidateTest {
         assertFalse (Validate.validateEmail("spaces@gmail.c"));
 
     }
+
+    @Test
+    public void testValidName() {
+        assertTrue(Validate.validateName("Мастер и Маргарита"));
+        assertTrue(Validate.validateName("Master and Margarita"));
+    }
+    @Test
+    public void testInvalidName() {
+        assertFalse(Validate.validateName(""));
+    }
+
 }
