@@ -5,9 +5,9 @@ import models.UserModel;
 import models.UserRole;
 import repositories.BookRepository;
 
-import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class BookService {
 
@@ -19,7 +19,7 @@ public class BookService {
 
     // Обновить информацию о книге (только для админа)
     public void updateBook(BookModel bookToUpdate, UserModel admin) {
-        if (admin.getUserRole() == UserRole.Admin) {
+        if (admin.getUserRole() == UserRole.ADMIN) {
             bookRepository.editBook(bookToUpdate, admin);
         } else {
             System.out.println("Только администратор может обновлять информацию о книге.");
@@ -39,7 +39,7 @@ public class BookService {
 
     // Добавить книгу (только для админа)
     public void addBook(BookModel book, UserModel admin) {
-        if (admin.getUserRole() == UserRole.Admin) {
+        if (admin.getUserRole() == UserRole.ADMIN) {
             bookRepository.add(book);
             bookRepository.saveBooks();
         } else {
@@ -49,8 +49,8 @@ public class BookService {
 
     // Удалить книгу (только для админа)
     public void deleteBook(int id, UserModel admin) {
-        if (admin.getUserRole() == UserRole.Admin) {
-            BookModel bookToDelete = bookRepository.getBook(b -> b.getId() == id);
+        if (admin.getUserRole() == UserRole.ADMIN) {
+            BookModel bookToDelete = bookRepository.findBook(b -> b.getId() == id);
             bookRepository.remove(bookToDelete);
             bookRepository.saveBooks();
         } else {
@@ -60,12 +60,12 @@ public class BookService {
 
     // Показать информацию о книге
     public BookModel showBookInfo(Predicate<BookModel> predicate) {
-        return bookRepository.getBook(predicate);
+        return bookRepository.findBook(predicate);
     }
 
     // Поиск книги
     public List<BookModel> searchBooks(Predicate<BookModel> predicate) {
-        return bookRepository.getBooks(predicate);
+        return bookRepository.findBooks(predicate);
     }
 
     // Выдача книги пользователю
@@ -89,15 +89,19 @@ public class BookService {
     }
 
     public BookModel getBookById(int id) {
-        return bookRepository.getBook(b -> b.getId() == id);
+        return bookRepository.findBook(b -> b.getId() == id);
     }
 
     public List<BookModel> searchBook(String title) {
-        return bookRepository.getBooks(b -> b.getName().contains(title));
+        return bookRepository.findBooks(b -> b.getName().contains(title));
+    }
+
+    public void showBooks() {
+
     }
 
     public boolean issueBookToUser(int bookId, int userId) {
-        BookModel book = bookRepository.getBook(b -> b.getId() == bookId);
+        BookModel book = bookRepository.findBook(b -> b.getId() == bookId);
 
         if (book != null) {
             UserModel user = book.getUser();
@@ -110,11 +114,25 @@ public class BookService {
     }
 
     public boolean returnBook(int bookId) {
-        BookModel book = bookRepository.getBook(b -> b.getId() == bookId);
+        BookModel book = bookRepository.findBook(b -> b.getId() == bookId);
         if (book != null) {
             bookRepository.dropBook(book);
             return true;
         }
         return false;
     }
+
+    public List<BookModel> getAllBooks() {
+        List<BookModel> allBooks = (List<BookModel>) bookRepository.getAllBooks();
+        List<BookModel> booksWithNonNullId = allBooks.stream()
+                .filter(book -> book.getId() > 0)
+                .collect(Collectors.toList());
+
+        for (BookModel book : booksWithNonNullId) {
+            System.out.println("Book ID: " + book.getId());
+        }
+
+        return booksWithNonNullId;
+    }
+
 }

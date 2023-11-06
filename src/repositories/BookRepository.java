@@ -5,9 +5,7 @@ import models.UserModel;
 import models.UserRole;
 
 import java.io.*;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -16,6 +14,10 @@ public class BookRepository {
     ElasticArray<BookModel> books = new ElasticArray<BookModel>();
 
     private final String filename = "BOOKDB.txt";
+
+    public BookRepository() {
+        this.books = new ElasticArray<>(); // Создание нового списка книг
+    }
 
     public void saveBooks() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
@@ -49,10 +51,10 @@ public class BookRepository {
         books.remove(books.findIndexOf(x -> x.equals(book)));
     }
 
-    public BookModel getBook(Predicate<BookModel> predicate){
+    public BookModel findBook(Predicate<BookModel> predicate){
         return books.find(predicate);
     }
-    public List<BookModel> getBooks(Predicate<BookModel> predicate){
+    public List<BookModel> findBooks(Predicate<BookModel> predicate){
         return books.findAll(predicate);
     }
 
@@ -61,7 +63,7 @@ public class BookRepository {
     }
 
     public boolean editBook(BookModel book, UserModel user) {
-        if (user.getUserRole() == UserRole.Admin) {
+        if (user.getUserRole() == UserRole.ADMIN) {
             if (!Validate.validateName(book.getName()) || !Validate.validateName(book.getAuthor()) || !Validate.validateName(book.getBookText())) {
                 return false;
             }
@@ -83,8 +85,13 @@ public class BookRepository {
 
         book.setPickUpDate(LocalDate.now(), user);
     }
+    
 
     public void dropBook(BookModel book) {
         book.setDropDate(LocalDate.now());
+    }
+
+    public ElasticArray<BookModel> getAllBooks() {
+        return books;
     }
 }

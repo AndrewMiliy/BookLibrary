@@ -9,10 +9,7 @@ import services.BookService;
 import services.UserService;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -58,12 +55,30 @@ public class ConsoleMenu {
     }
 
     private void editBook() {
+        System.out.println("Enter book ID:");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        BookModel book = bookService.getBookById(id);
         System.out.println("Enter new title:");
         String title = scanner.nextLine();
+        book.setName(title);
         System.out.println("Enter new author:");
         String author = scanner.nextLine();
-        BookModel book = new BookModel(title, author);
-        bookService.updateBook(book, currentUser);
+        book.setAuthor(author);
+        System.out.println("Enter new publishing date(YYYY-MM-DD):");
+        String dateString = scanner.nextLine();
+        LocalDate date = null;
+        try {
+            date = LocalDate.parse(dateString);
+            book.setPublishingDate(date);
+        } catch (Exception e) {
+            System.out.println("Wrong date format. Please use YYYY-MM-DD.");
+        }
+        System.out.println("Enter new description:");
+        String description = scanner.nextLine();
+        book.setBookText(description);
+        BookModel bookModel = new BookModel(title, author, date, description);
+        bookService.updateBook(bookModel, currentUser);
         System.out.println("Book updated successfully!");
     }
 
@@ -73,9 +88,10 @@ public class ConsoleMenu {
         scanner.nextLine(); // Clearing buffer
         BookModel book = bookService.getBookById(id);
         if (book != null) {
-            System.out.println(book);
+            System.out.println("ID, Title, Author, ,Publishing Date:\n"
+                    + book.getId() + ". " + book.getName() + ". " + book.getAuthor() + ". " + book.getPublishingDate() + ".\nDescription: " + book.getBookText());
         } else {
-            System.out.println("Book not found.");
+            System.err.println("Book not found.");
         }
     }
 
@@ -84,9 +100,11 @@ public class ConsoleMenu {
         String title = scanner.nextLine();
         List<BookModel> books = bookService.searchBook(title);
         for (BookModel book : books) {
-            System.out.println(book);
+            System.out.println("ID: "
+                    + book.getId() + ". " + book.getName() + ". " + book.getAuthor() + ". " + book.getPublishingDate());
         }
     }
+
 
     private void issueBookToUser() {
         System.out.println("Enter book ID to issue:");
@@ -128,7 +146,7 @@ public class ConsoleMenu {
         {
             System.out.println("User registered successfully!");
             currentUser = user;
-            currentUser.setUserRole(UserRole.Admin);
+            currentUser.setUserRole(UserRole.ADMIN);
             userService.saveUsers();
         }
         else
@@ -151,7 +169,7 @@ public class ConsoleMenu {
     }
 
     private void resetPassword() {
-        System.out.println("Enter username:");
+        System.out.println("Enter email:");
         String username = scanner.nextLine();
         System.out.println("Enter new password:");
         String newPassword = scanner.nextLine();
@@ -172,6 +190,15 @@ public class ConsoleMenu {
         }
         for (BookModel book : books) {
             System.out.println(book);
+        }
+
+    }
+
+    public void showAllBooks() {
+        List<BookModel> books = bookService.getAllBooks();
+        for (BookModel book : books) {
+            System.out.println("ID: "
+                    + book.getId() + ". " + book.getName() + ". " + book.getAuthor() + ". " + book.getPublishingDate());
         }
     }
 
@@ -227,11 +254,12 @@ public class ConsoleMenu {
             System.out.println("1. Add Book");
             System.out.println("2. Remove Book");
             System.out.println("3. Edit Book");
-            System.out.println("4. Display Book Info");
-            System.out.println("5. Search Book");
-            System.out.println("6. Issue Book to User");
-            System.out.println("7. Return Book");
-            System.out.println("8. Go back");
+            System.out.println("4. Show all books");
+            System.out.println("5. Display Book Info");
+            System.out.println("6. Search Book");
+            System.out.println("7. Issue Book to User");
+            System.out.println("8. Return Book");
+            System.out.println("9. Go back");
             int choice = scanner.nextInt();
             scanner.nextLine();  // clearing the newline
 
@@ -246,18 +274,21 @@ public class ConsoleMenu {
                     editBook();
                     break;
                 case 4:
-                    displayBookInfo();
+                    showAllBooks();
                     break;
                 case 5:
-                    searchBook();
+                    displayBookInfo();
                     break;
                 case 6:
-                    issueBookToUser();
+                    searchBook();
                     break;
                 case 7:
-                    returnBook();
+                    issueBookToUser();
                     break;
                 case 8:
+                    returnBook();
+                    break;
+                case 9:
                     return;
                 default:
                     System.out.println("Invalid choice.");

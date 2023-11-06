@@ -22,7 +22,7 @@ public class UserService {
 
     // Редактировать роль пользователя (только для админа)
     public void setUserRole(UserModel user, UserRole role, UserModel admin) {
-        if (admin.getUserRole() == UserRole.Admin) {
+        if (admin.getUserRole() == UserRole.ADMIN) {
             user.setUserRole(role);
         } else {
             System.out.println("Only admin can edit user roles.");
@@ -61,7 +61,7 @@ public class UserService {
             return new ArrayList<>();
         }
         return bookIds.stream()
-                .map(bookId -> bookRepository.getBook(b -> b.getId() == bookId))
+                .map(bookId -> bookRepository.findBook(b -> b.getId() == bookId))
                 .filter(book -> book != null)
                 .collect(Collectors.toList());
     }
