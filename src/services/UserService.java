@@ -4,15 +4,17 @@ import models.BookModel;
 import models.UserModel;
 import models.UserRole;
 import repositories.BookRepository;
+import repositories.ElasticArray;
 import repositories.UserRepository;
 import repositories.HashedPassword;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class UserService {
-    private UserRepository userRepository;
+    private static UserRepository userRepository;
     private BookRepository bookRepository;
 
     public UserService(UserRepository userRepository, BookRepository bookRepository) {
@@ -20,9 +22,13 @@ public class UserService {
         this.bookRepository = bookRepository;
     }
 
+    public static UserModel getUser(Predicate<UserModel> predicate) {
+        return userRepository.getUser(predicate);
+    }
+
     // Редактировать роль пользователя (только для админа)
     public void setUserRole(UserModel user, UserRole role, UserModel admin) {
-        if (admin.getUserRole() == UserRole.Admin) {
+        if (admin.getUserRole() == UserRole.ADMIN) {
             user.setUserRole(role);
         } else {
             System.out.println("Only admin can edit user roles.");
@@ -55,15 +61,21 @@ public class UserService {
         return false;
     }
 
-    public List<BookModel> getBooksForUser(UserModel user) {
-        List<Integer> bookIds = user.getBookIds();
+    public ElasticArray<BookModel> getBooksForUser(UserModel user) {
+        ElasticArray<Integer> bookIds = user.getBookIds();
         if (bookIds == null) {
-            return new ArrayList<>();
+            return new ElasticArray<>();
         }
-        return bookIds.stream()
-                .map(bookId -> bookRepository.getBook(b -> b.getId() == bookId))
-                .filter(book -> book != null)
-                .collect(Collectors.toList());
+
+        ElasticArray<BookModel> books = new ElasticArray<>();
+        for (int i = 0; i < bookIds.size(); i++) {
+            int finalI = i;
+            BookModel book = bookRepository.getBook(b -> b.getId() == bookIds.get(finalI));
+            if (book != null) {
+                books.add(book);
+            }
+        }
+        return books;
     }
 
     public boolean register(UserModel user) {

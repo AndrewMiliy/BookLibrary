@@ -6,6 +6,6 @@ public class IdCounter {
     private int _id = 0;
 
     public int getNextId() {
-        return ++_id;
+        return _id++;
     }
 }

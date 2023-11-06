@@ -1,7 +1,7 @@
 package models;
 
 public enum UserRole {
-    Admin,
-    User,
+    ADMIN,
+    USER,
     None
 }

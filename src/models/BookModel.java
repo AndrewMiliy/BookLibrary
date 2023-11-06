@@ -25,9 +25,6 @@ public class BookModel implements Serializable {
         setBookText(bookText);
     }
 
-    public BookModel(String title, String author) {
-    }
-
     public int getId() {
         return id;
     }
@@ -91,6 +88,21 @@ public class BookModel implements Serializable {
 
  public boolean isBusy () {
         return getUser() != null;
+ }
+
+    @Override
+ public String toString()
+ {
+    return "Book{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", author='" + author + '\'' +
+            ", publishingDate=" + publishingDate +
+            ", pickUpDate=" + pickUpDate +
+            ", dropDate=" + dropDate +
+            ", bookText='" + bookText + '\'' +
+            ", user=" + user +
+            '}';
  }
 
 }

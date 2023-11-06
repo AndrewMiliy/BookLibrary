@@ -1,9 +1,9 @@
 package models;
 
+import repositories.ElasticArray;
 import repositories.IdCounter;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class UserModel implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -16,7 +16,7 @@ public class UserModel implements Serializable {
     private UserRole userRole;
 
     // Список ID книг, которые у пользователя
-    private List<Integer> bookIds;
+    private ElasticArray<Integer> bookIds;
 
     private int id;
 
@@ -26,6 +26,7 @@ public class UserModel implements Serializable {
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.bookIds = new ElasticArray<Integer>();
     }
 
     public String getFirstName() {
@@ -72,7 +73,7 @@ public class UserModel implements Serializable {
         this.userRole = userRole;
     }
 
-    public List<Integer> getBookIds() {
+    public ElasticArray<Integer> getBookIds() {
         return bookIds;
     }
 
@@ -81,10 +82,14 @@ public class UserModel implements Serializable {
     }
 
     public void removeBookId(int bookId) {
-        bookIds.remove(Integer.valueOf(bookId));
+        bookIds.remove(bookId);
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public UserRole getRole() {
+        return userRole;
     }
 }

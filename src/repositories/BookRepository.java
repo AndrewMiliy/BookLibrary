@@ -61,7 +61,7 @@ public class BookRepository {
     }
 
     public boolean editBook(BookModel book, UserModel user) {
-        if (user.getUserRole() == UserRole.Admin) {
+        if (user.getUserRole() == UserRole.ADMIN) {
             if (!Validate.validateName(book.getName()) || !Validate.validateName(book.getAuthor()) || !Validate.validateName(book.getBookText())) {
                 return false;
             }

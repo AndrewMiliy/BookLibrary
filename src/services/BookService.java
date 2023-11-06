@@ -4,6 +4,7 @@ import models.BookModel;
 import models.UserModel;
 import models.UserRole;
 import repositories.BookRepository;
+import repositories.UserRepository;
 
 import java.util.Date;
 import java.util.List;
@@ -19,27 +20,16 @@ public class BookService {
 
     // Обновить информацию о книге (только для админа)
     public void updateBook(BookModel bookToUpdate, UserModel admin) {
-        if (admin.getUserRole() == UserRole.Admin) {
+        if (admin.getUserRole() == UserRole.ADMIN) {
             bookRepository.editBook(bookToUpdate, admin);
         } else {
             System.out.println("Только администратор может обновлять информацию о книге.");
         }
     }
 
-    // Узнать, сколько времени книга находится у пользователя
-//    public long getBookDurationWithUser(BookModel book) {
-//        if (book.getPickUpDate() != null && book.getDropDate() == null) {
-//            return new Date().getTime() - book.getPickUpDate().getTime();
-//        } else if (book.getPickUpDate() != null) {
-//            return book.getDropDate().getTime() - book.getPickUpDate().getTime();
-//        }
-//        return 0;
-//    }
-
-
     // Добавить книгу (только для админа)
     public void addBook(BookModel book, UserModel admin) {
-        if (admin.getUserRole() == UserRole.Admin) {
+        if (admin.getUserRole() == UserRole.ADMIN) {
             bookRepository.add(book);
             bookRepository.saveBooks();
         } else {
@@ -49,7 +39,7 @@ public class BookService {
 
     // Удалить книгу (только для админа)
     public void deleteBook(int id, UserModel admin) {
-        if (admin.getUserRole() == UserRole.Admin) {
+        if (admin.getUserRole() == UserRole.ADMIN) {
             BookModel bookToDelete = bookRepository.getBook(b -> b.getId() == id);
             bookRepository.remove(bookToDelete);
             bookRepository.saveBooks();
@@ -100,9 +90,10 @@ public class BookService {
         BookModel book = bookRepository.getBook(b -> b.getId() == bookId);
 
         if (book != null) {
-            UserModel user = book.getUser();
+            UserModel user = UserService.getUser(u -> u.getId() == userId);
             if (user != null) {
                 bookRepository.pickUpBook(book, user);
+                user.addBookId(bookId);
                 return true;
             }
         }
@@ -118,3 +109,4 @@ public class BookService {
         return false;
     }
 }
+
