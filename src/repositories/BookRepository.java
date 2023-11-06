@@ -33,6 +33,7 @@ public class BookRepository {
         }
     }
 
+
     public boolean add(BookModel book) {
         if (Validate.validateName(book.getName())
                 && Validate.validateName(book.getAuthor())

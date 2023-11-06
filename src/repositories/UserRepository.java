@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class UserRepository {
-    ElasticArray <UserModel> users = new ElasticArray <UserModel>();
+    ElasticArray<UserModel> users = new ElasticArray<UserModel>();
 
     private final String filename = "USERDB.txt";
 
@@ -28,6 +28,7 @@ public class UserRepository {
         }
     }
 
+
     public boolean add(UserModel user) {
         if (Validate.validateEmail(user.getEmail())
                 && Validate.validateName(user.getFirstName())
@@ -42,10 +43,11 @@ public class UserRepository {
         users.remove(users.findIndexOf(x -> x.equals(user)));
     }
 
-    public UserModel getUser(Predicate<UserModel> predicate){
+    public UserModel getUser(Predicate<UserModel> predicate) {
         return users.find(predicate);
     }
-    public List<UserModel> getUsers(Predicate<UserModel> predicate){
+
+    public List<UserModel> getUsers(Predicate<UserModel> predicate) {
         return users.findAll(predicate);
     }
 
@@ -53,23 +55,30 @@ public class UserRepository {
         return users.size();
     }
 
-    public boolean editUser (UserModel user) {
-        if (!Validate.validateName(user.getFirstName())
-                || !Validate.validateName(user.getLastName())
-                || !Validate.validateEmail(user.getEmail())
-                || !Validate.isPasswordValid(user.getPassword())) {
-        return false;
+
+
+            public boolean editUser (UserModel user){
+                if (!Validate.validateName(user.getFirstName())
+                        || !Validate.validateName(user.getLastName())
+                        || !Validate.validateEmail(user.getEmail())
+                        || !Validate.isPasswordValid(user.getPassword())) {
+                    return false;
+
+                }
+                UserModel targetUser = users.find(x -> x.getId()== user.getId());
+
+                targetUser.setEmail(targetUser.getEmail().equals(user.getEmail()) ? targetUser.getEmail() : user.getEmail());
+                targetUser.setFirstName(targetUser.getFirstName().equals(user.getFirstName()) ? targetUser.getFirstName() : user.getFirstName());
+                targetUser.setLastName(targetUser.getLastName().equals(user.getLastName()) ? targetUser.getLastName() : user.getLastName());
+                targetUser.setPassword(targetUser.getPassword().equals(user.getPassword()) ? targetUser.getPassword() : user.getPassword());
+                return true;
+            }
+
+
+
         }
-        UserModel targetUser = users.find(x -> x.equals(user.getId()));
-
-        targetUser.setEmail(targetUser.getEmail().equals(user.getEmail()) ? targetUser.getEmail() : user.getEmail());
-        targetUser.setFirstName(targetUser.getFirstName().equals(user.getFirstName()) ? targetUser.getFirstName() : user.getFirstName());
-        targetUser.setLastName(targetUser.getLastName().equals(user.getLastName()) ? targetUser.getLastName() : user.getLastName());
-        targetUser.setPassword(targetUser.getPassword().equals(user.getPassword()) ? targetUser.getPassword() : user.getPassword());
-        return true;
-    }
 
 
 
 
-}
+

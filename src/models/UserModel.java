@@ -1,10 +1,8 @@
 package models;
 
-import repositories.ElasticArray;
-import repositories.HashedPassword;
+import repositories.IdCounter;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
 public class UserModel implements Serializable {
@@ -20,9 +18,10 @@ public class UserModel implements Serializable {
     // Список ID книг, которые у пользователя
     private List<Integer> bookIds;
 
-    public int id = 0;
+    private int id;
 
     public UserModel(String firstName, String lastName, String email, String password) {
+        this.setId(IdCounter.Instance.getNextId());
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -83,5 +82,9 @@ public class UserModel implements Serializable {
 
     public void removeBookId(int bookId) {
         bookIds.remove(Integer.valueOf(bookId));
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
