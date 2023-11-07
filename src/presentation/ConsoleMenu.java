@@ -3,15 +3,13 @@ package presentation;
 import models.BookModel;
 import models.UserModel;
 import models.UserRole;
-import repositories.*;
+import repositories.BookRepository;
+import repositories.UserRepository;
 import services.BookService;
 import services.UserService;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,7 +18,6 @@ public class ConsoleMenu {
     private final UserService userService;
     private final Scanner scanner;
     private UserModel currentUser;
-    private BookModel currentBook;
 
     public ConsoleMenu(BookService bookService, UserService userService) {
         this.bookService = bookService;
@@ -29,7 +26,6 @@ public class ConsoleMenu {
     }
 
     private void addBook() {
-        ShowCurrentInfo();
         System.out.println("Enter book title:");
         String title = scanner.nextLine();
         System.out.println("Enter book author:");
@@ -51,7 +47,6 @@ public class ConsoleMenu {
     }
 
     private void removeBook() {
-        ShowCurrentInfo();
         System.out.println("Enter book ID to remove:");
         int id = scanner.nextInt();
         scanner.nextLine(); // Clearing buffer
@@ -60,80 +55,58 @@ public class ConsoleMenu {
     }
 
     private void editBook() {
-        ShowCurrentInfo();
-
-        System.out.println("Enter book id for edit");
-        String bookID = scanner.nextLine().trim();
-        currentBook = bookService.getBookById(Integer.parseInt(bookID));
-
-        System.out.println("Enter new title (press Enter to keep current):");
-        String title = scanner.nextLine().trim();
-        if (title.isEmpty()) {
-            title = currentBook.getName();
+        System.out.println("Enter book ID:");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        BookModel book = bookService.getBookById(id);
+        System.out.println("Enter new title:");
+        String title = scanner.nextLine();
+        book.setName(title);
+        System.out.println("Enter new author:");
+        String author = scanner.nextLine();
+        book.setAuthor(author);
+        System.out.println("Enter new publishing date(YYYY-MM-DD):");
+        String dateString = scanner.nextLine();
+        LocalDate date = null;
+        try {
+            date = LocalDate.parse(dateString);
+            book.setPublishingDate(date);
+        } catch (Exception e) {
+            System.out.println("Wrong date format. Please use YYYY-MM-DD.");
         }
-
-        System.out.println("Enter new author (press Enter to keep current):");
-        String author = scanner.nextLine().trim();
-        if (author.isEmpty()) {
-            author = currentBook.getAuthor();
-        }
-
-        System.out.println("Enter book date (YYYY-MM-DD): (press Enter to keep current):");
-        String dateInput = scanner.nextLine();
-        LocalDate date;
-        if (author.isEmpty()) {
-            date = currentBook.getPublishingDate();
-        }
-        else
-        {
-            try {
-                date = LocalDate.now();
-            } catch (DateTimeParseException e) {
-                System.out.println("Invalid date format.");
-                return;
-            }
-        }
-
-        System.out.println("Enter new author (press Enter to keep current):");
-        String bookText = scanner.nextLine().trim();
-        if (author.isEmpty()) {
-            author = currentBook.getBookText();
-        }
-
-        currentBook.setName(title);
-        currentBook.setAuthor(author);
-        currentBook.setPublishingDate(date);
-        currentBook.setBookText(bookText);
-
-        bookService.updateBook(currentBook, currentUser);
+        System.out.println("Enter new description:");
+        String description = scanner.nextLine();
+        book.setBookText(description);
+        BookModel bookModel = new BookModel(title, author, date, description);
+        bookService.updateBook(bookModel, currentUser);
         System.out.println("Book updated successfully!");
     }
 
     private void displayBookInfo() {
-        ShowCurrentInfo();
         System.out.println("Enter book ID:");
         int id = scanner.nextInt();
         scanner.nextLine(); // Clearing buffer
         BookModel book = bookService.getBookById(id);
         if (book != null) {
-            System.out.println(book);
+            System.out.println("ID, Title, Author, ,Publishing Date:\n"
+                    + book.getId() + ". " + book.getName() + ". " + book.getAuthor() + ". " + book.getPublishingDate() + ".\nDescription: " + book.getBookText());
         } else {
-            System.out.println("Book not found.");
+            System.err.println("Book not found.");
         }
     }
 
     private void searchBook() {
-        ShowCurrentInfo();
         System.out.println("Enter book title to search:");
         String title = scanner.nextLine();
         List<BookModel> books = bookService.searchBook(title);
         for (BookModel book : books) {
-            System.out.println(book.toString());
+            System.out.println("ID: "
+                    + book.getId() + ". " + book.getName() + ". " + book.getAuthor() + ". " + book.getPublishingDate());
         }
     }
 
+
     private void issueBookToUser() {
-        ShowCurrentInfo();
         System.out.println("Enter book ID to issue:");
         int bookId = scanner.nextInt();
         System.out.println("Enter user ID:");
@@ -148,12 +121,10 @@ public class ConsoleMenu {
     }
 
     private void returnBook() {
-        ShowCurrentInfo();
         System.out.println("Enter book ID to return:");
         int bookId = scanner.nextInt();
         scanner.nextLine(); // Clearing buffer
         boolean returned = bookService.returnBook(bookId);
-        currentUser.removeBookId(bookId);
         if (returned) {
             System.out.println("Book returned successfully!");
         } else {
@@ -170,14 +141,6 @@ public class ConsoleMenu {
         String email = scanner.nextLine();
         System.out.println("Enter password:");
         String password = scanner.nextLine();
-        if(Validate.isPasswordValid(password))
-        {
-            password = HashedPassword.hashPassword(password);
-        }
-        else
-        {
-            System.out.println("Invalid password, try again.");
-        }
         UserModel user = new UserModel(firstName, lastName, email, password);
         if(userService.register(user))
         {
@@ -196,7 +159,7 @@ public class ConsoleMenu {
         System.out.println("Enter email:");
         String email = scanner.nextLine();
         System.out.println("Enter password:");
-        String password = HashedPassword.hashPassword(scanner.nextLine());
+        String password = scanner.nextLine();
         currentUser = userService.authorize(email, password);
         if (currentUser != null) {
             System.out.println("Logged in successfully!");
@@ -206,33 +169,40 @@ public class ConsoleMenu {
     }
 
     private void resetPassword() {
-        System.out.println("Enter username:");
+        System.out.println("Enter email:");
         String username = scanner.nextLine();
         System.out.println("Enter new password:");
-        String newPassword = HashedPassword.hashPassword(scanner.nextLine());
+        String newPassword = scanner.nextLine();
         userService.recoverPassword(username, newPassword);
         System.out.println("Password reset successfully!");
     }
 
     private void listBooksForUser() {
-        ShowCurrentInfo();
         if (currentUser == null) {
             System.out.println("Please login first.");
             return;
         }
-        ElasticArray<BookModel> books = userService.getBooksForUser(currentUser);
-        if(books.size() == 0)
+        List<BookModel> books = userService.getBooksForUser(currentUser);
+        if(books.isEmpty())
         {
             System.out.println("No books found.");
             return;
         }
-        for (BookModel book : books.findAll(x -> true)) {
+        for (BookModel book : books) {
             System.out.println(book);
+        }
+
+    }
+
+    public void showAllBooks() {
+        List<BookModel> books = bookService.getAllBooks();
+        for (BookModel book : books) {
+            System.out.println("ID: "
+                    + book.getId() + ". " + book.getName() + ". " + book.getAuthor() + ". " + book.getPublishingDate());
         }
     }
 
     public void showMainMenu() {
-        ShowCurrentInfo();
         while (currentUser == null) {
             System.out.println("Please login or register first:");
             System.out.println("1. Register User");
@@ -254,7 +224,7 @@ public class ConsoleMenu {
                     System.out.println("Invalid choice.");
             }
         }
-        ShowCurrentInfo();
+
         while (true) {
             System.out.println("Select an option:");
             System.out.println("1. Manage Books");
@@ -279,17 +249,17 @@ public class ConsoleMenu {
     }
 
     private void showBookMenu() {
-        ShowCurrentInfo();
         while (true) {
             System.out.println("Select an option:");
             System.out.println("1. Add Book");
             System.out.println("2. Remove Book");
             System.out.println("3. Edit Book");
-            System.out.println("4. Display Book Info");
-            System.out.println("5. Search Book");
-            System.out.println("6. Issue Book to User");
-            System.out.println("7. Return Book");
-            System.out.println("8. Go back");
+            System.out.println("4. Show all books");
+            System.out.println("5. Display Book Info");
+            System.out.println("6. Search Book");
+            System.out.println("7. Issue Book to User");
+            System.out.println("8. Return Book");
+            System.out.println("9. Go back");
             int choice = scanner.nextInt();
             scanner.nextLine();  // clearing the newline
 
@@ -304,18 +274,21 @@ public class ConsoleMenu {
                     editBook();
                     break;
                 case 4:
-                    displayBookInfo();
+                    showAllBooks();
                     break;
                 case 5:
-                    searchBook();
+                    displayBookInfo();
                     break;
                 case 6:
-                    issueBookToUser();
+                    searchBook();
                     break;
                 case 7:
-                    returnBook();
+                    issueBookToUser();
                     break;
                 case 8:
+                    returnBook();
+                    break;
+                case 9:
                     return;
                 default:
                     System.out.println("Invalid choice.");
@@ -324,7 +297,6 @@ public class ConsoleMenu {
     }
 
     private void showUserMenu() {
-        ShowCurrentInfo();
         while (true) {
             System.out.println("Select an option:");
             System.out.println("1. Register User");
@@ -356,27 +328,12 @@ public class ConsoleMenu {
         }
     }
 
-    public void ShowCurrentInfo() {
-        if (currentUser != null) {
-            System.out.println("Current user: " + currentUser.getId() + " " + currentUser.getLastName() + " " + currentUser.getEmail());
-        }
-        if (currentBook != null) {
-            System.out.println("Current book: " + currentBook.getId() + " " + currentBook.getName() + " " + currentBook.getAuthor() + " " + currentBook.getPublishingDate());
-        }
-    }
-
     public static void main(String[] args) {
         BookRepository bookRepository = new BookRepository();
         UserRepository userRepository = new UserRepository();
-
         BookService bookService = new BookService(bookRepository);
         UserService userService = new UserService(userRepository, bookRepository);
-
         ConsoleMenu consoleMenu = new ConsoleMenu(bookService, userService);
-
-        bookRepository.loadBooks();
-        userRepository.loadUsers();
-
         consoleMenu.showMainMenu();
     }
 }

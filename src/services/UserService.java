@@ -4,26 +4,20 @@ import models.BookModel;
 import models.UserModel;
 import models.UserRole;
 import repositories.BookRepository;
-import repositories.ElasticArray;
 import repositories.UserRepository;
 import repositories.HashedPassword;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class UserService {
-    private static UserRepository userRepository;
+    private UserRepository userRepository;
     private BookRepository bookRepository;
 
     public UserService(UserRepository userRepository, BookRepository bookRepository) {
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
-    }
-
-    public static UserModel getUser(Predicate<UserModel> predicate) {
-        return userRepository.getUser(predicate);
     }
 
     // Редактировать роль пользователя (только для админа)
@@ -45,7 +39,7 @@ public class UserService {
     // Авторизация
     public UserModel authorize(String email, String password) {
         UserModel user = userRepository.getUser(u -> u.getEmail().equals(email));
-        if (user != null && user.getPassword().equals(password)) {
+        if (user != null && user.getPassword().equals(HashedPassword.hashPassword(password))) {
             return user;
         }
         return null;
@@ -61,21 +55,15 @@ public class UserService {
         return false;
     }
 
-    public ElasticArray<BookModel> getBooksForUser(UserModel user) {
-        ElasticArray<Integer> bookIds = user.getBookIds();
+    public List<BookModel> getBooksForUser(UserModel user) {
+        List<Integer> bookIds = user.getBookIds();
         if (bookIds == null) {
-            return new ElasticArray<>();
+            return new ArrayList<>();
         }
-
-        ElasticArray<BookModel> books = new ElasticArray<>();
-        for (int i = 0; i < bookIds.size(); i++) {
-            int finalI = i;
-            BookModel book = bookRepository.getBook(b -> b.getId() == bookIds.get(finalI));
-            if (book != null) {
-                books.add(book);
-            }
-        }
-        return books;
+        return bookIds.stream()
+                .map(bookId -> bookRepository.findBook(b -> b.getId() == bookId))
+                .filter(book -> book != null)
+                .collect(Collectors.toList());
     }
 
     public boolean register(UserModel user) {
